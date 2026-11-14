@@ -193,10 +193,11 @@ def check_regex(
         SELECT
             COUNT(*) AS total,
             SUM(CASE WHEN "{column}"::VARCHAR
-                NOT SIMILAR TO '{pattern}' THEN 1 ELSE 0 END) AS mismatches
+                NOT SIMILAR TO $1 THEN 1 ELSE 0 END) AS mismatches
         FROM "{table}"
         WHERE "{column}" IS NOT NULL
-        """
+        """,
+        [pattern],
     ).fetchone()
 
     if result is None or result[0] == 0:

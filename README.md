@@ -29,7 +29,7 @@ html = report(results)
 | `duplicates` | Duplicate rows | `columns` (list, optional) |
 | `uniqueness` | Unique value percentage | — |
 | `range` | Values within min/max bounds | `min`, `max` |
-| `regex` | Pattern matching (SQL SIMILAR TO) | `pattern` |
+| `regex` | Pattern matching (DuckDB SIMILAR TO, regex syntax) | `pattern` |
 | `referential_integrity` | Foreign key validation | `ref_table`, `ref_column` |
 | `freshness` | Data not older than threshold | `max_hours` |
 | `composite` | Custom SQL check | `sql`, `expected` |

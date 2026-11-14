@@ -33,7 +33,7 @@ Eight independent check functions, each `(conn, config) -> CheckResult`:
 | `check_duplicates` | Duplicate rows across specified columns |
 | `check_uniqueness` | Percentage of distinct values in a column |
 | `check_range` | Numeric values within min/max bounds |
-| `check_regex` | String values match a SIMILAR TO pattern |
+| `check_regex` | String values match a DuckDB SIMILAR TO regex pattern |
 | `check_referential_integrity` | Foreign key references exist in target table |
 | `check_freshness` | Most recent timestamp within max hours |
 | `check_composite` | Custom SQL returns an expected value |
@@ -56,7 +56,7 @@ Three public functions:
 2. **Pydantic for validation** — config parsing and result serialization handled by the type system, not manual checks
 3. **Dict-based check specs** — `{"check": "nulls", "column": "x", "threshold": 0}` over classes, keeping the API simple for YAML/JSON config files
 4. **Each check is independent** — no shared state, no ordering requirements, trivially parallelizable
-5. **SQL injection awareness** — column/table names in f-strings are quoted with `"`, patterns use parameterized-style quoting. Production use should add allowlist validation.
+5. **SQL injection awareness** — column/table names in f-strings are quoted with `"`, regex patterns use parameterized queries (`$1` placeholders). Production use should add allowlist validation for identifiers.
 
 ## Testing strategy
 
