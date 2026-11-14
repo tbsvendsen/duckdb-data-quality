@@ -43,9 +43,7 @@ def check(
             table=table,
             column=check_spec.get("column"),
             params={
-                k: v
-                for k, v in check_spec.items()
-                if k not in ("check", "column")
+                k: v for k, v in check_spec.items() if k not in ("check", "column")
             },
         )
 
@@ -73,9 +71,7 @@ def validate_schema(
     expectations = [SchemaExpectation(**e) for e in expected]
 
     try:
-        actual_schema = conn.execute(
-            f"DESCRIBE \"{table}\""
-        ).fetchall()
+        actual_schema = conn.execute(f'DESCRIBE "{table}"').fetchall()
     except duckdb.CatalogException:
         return CheckResult(
             check_name="schema",
@@ -96,9 +92,7 @@ def validate_schema(
         expected_type = exp.dtype.upper()
 
         if actual_type != expected_type:
-            issues.append(
-                f"{exp.column}: expected {expected_type}, got {actual_type}"
-            )
+            issues.append(f"{exp.column}: expected {expected_type}, got {actual_type}")
 
     return CheckResult(
         check_name="schema",
@@ -128,8 +122,8 @@ def report(results: list[CheckResult]) -> str:
     for r in results:
         css = r.status.value
         lines.append(
-            f'<tr><td>{r.check_name}</td><td>{r.table}</td>'
-            f'<td>{r.column or "-"}</td>'
+            f"<tr><td>{r.check_name}</td><td>{r.table}</td>"
+            f"<td>{r.column or '-'}</td>"
             f'<td class="{css}">{r.status.value.upper()}</td>'
             f"<td>{r.message}</td></tr>"
         )
@@ -139,13 +133,15 @@ def report(results: list[CheckResult]) -> str:
     failed = sum(1 for r in results if r.status == CheckStatus.FAIL)
     errors = sum(1 for r in results if r.status == CheckStatus.ERROR)
 
-    lines.extend([
-        "</table>",
-        f"<p>Total: {total} | "
-        f'<span class="pass">Pass: {passed}</span> | '
-        f'<span class="fail">Fail: {failed}</span> | '
-        f'<span class="error">Error: {errors}</span></p>',
-        "</body></html>",
-    ])
+    lines.extend(
+        [
+            "</table>",
+            f"<p>Total: {total} | "
+            f'<span class="pass">Pass: {passed}</span> | '
+            f'<span class="fail">Fail: {failed}</span> | '
+            f'<span class="error">Error: {errors}</span></p>',
+            "</body></html>",
+        ]
+    )
 
     return "\n".join(lines)
