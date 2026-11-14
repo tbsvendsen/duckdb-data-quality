@@ -11,9 +11,7 @@ from duckdb_data_quality.models import CheckConfig, CheckResult, CheckStatus
 ParamValue = float | int | str | bool | list[str]
 
 
-def _float_param(
-    params: dict[str, ParamValue], key: str, default: float
-) -> float:
+def _float_param(params: dict[str, ParamValue], key: str, default: float) -> float:
     val = params.get(key, default)
     if isinstance(val, (int, float)):
         return float(val)
@@ -132,9 +130,7 @@ def check_uniqueness(
     )
 
 
-def check_range(
-    conn: duckdb.DuckDBPyConnection, config: CheckConfig
-) -> CheckResult:
+def check_range(conn: duckdb.DuckDBPyConnection, config: CheckConfig) -> CheckResult:
     table = config.table
     column = config.column
     min_val = config.params.get("min")
@@ -181,9 +177,7 @@ def check_range(
     )
 
 
-def check_regex(
-    conn: duckdb.DuckDBPyConnection, config: CheckConfig
-) -> CheckResult:
+def check_regex(conn: duckdb.DuckDBPyConnection, config: CheckConfig) -> CheckResult:
     table = config.table
     column = config.column
     pattern = str(config.params.get("pattern", ".*"))

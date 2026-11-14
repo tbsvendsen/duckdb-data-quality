@@ -44,9 +44,7 @@ class TestNulls:
         result = check_nulls(conn, config)
         assert result.status == CheckStatus.FAIL
 
-    def test_passes_for_non_null_column(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_passes_for_non_null_column(self, conn: duckdb.DuckDBPyConnection) -> None:
         config = CheckConfig(
             check_name="nulls",
             table="customers",
@@ -70,9 +68,7 @@ class TestDuplicates:
         assert result.status == CheckStatus.PASS
         assert result.value == 0
 
-    def test_detects_full_row_duplicates(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_detects_full_row_duplicates(self, conn: duckdb.DuckDBPyConnection) -> None:
         conn.execute(
             "INSERT INTO customers VALUES "
             "(4, 'Alice', 'alice@example.com', '2026-11-01 10:00:00')"
@@ -87,9 +83,7 @@ class TestDuplicates:
 
 
 class TestUniqueness:
-    def test_primary_key_is_unique(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_primary_key_is_unique(self, conn: duckdb.DuckDBPyConnection) -> None:
         config = CheckConfig(
             check_name="uniqueness",
             table="customers",
@@ -114,9 +108,7 @@ class TestUniqueness:
 
 
 class TestRange:
-    def test_values_within_range(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_values_within_range(self, conn: duckdb.DuckDBPyConnection) -> None:
         config = CheckConfig(
             check_name="range",
             table="orders",
@@ -126,9 +118,7 @@ class TestRange:
         result = check_range(conn, config)
         assert result.status == CheckStatus.PASS
 
-    def test_fails_when_below_minimum(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_fails_when_below_minimum(self, conn: duckdb.DuckDBPyConnection) -> None:
         config = CheckConfig(
             check_name="range",
             table="orders",
@@ -141,9 +131,7 @@ class TestRange:
 
 
 class TestRegex:
-    def test_email_pattern_matches(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_email_pattern_matches(self, conn: duckdb.DuckDBPyConnection) -> None:
         config = CheckConfig(
             check_name="regex",
             table="customers",
@@ -153,9 +141,7 @@ class TestRegex:
         result = check_regex(conn, config)
         assert result.status == CheckStatus.PASS
 
-    def test_invalid_pattern_fails(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_invalid_pattern_fails(self, conn: duckdb.DuckDBPyConnection) -> None:
         config = CheckConfig(
             check_name="regex",
             table="orders",
@@ -167,9 +153,7 @@ class TestRegex:
 
 
 class TestReferentialIntegrity:
-    def test_valid_references_pass(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_valid_references_pass(self, conn: duckdb.DuckDBPyConnection) -> None:
         conn.execute("""
             CREATE TABLE valid_orders AS
             SELECT * FROM orders WHERE customer_id IN (SELECT id FROM customers)
@@ -183,9 +167,7 @@ class TestReferentialIntegrity:
         result = check_referential_integrity(conn, config)
         assert result.status == CheckStatus.PASS
 
-    def test_orphaned_rows_fail(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_orphaned_rows_fail(self, conn: duckdb.DuckDBPyConnection) -> None:
         config = CheckConfig(
             check_name="referential_integrity",
             table="orders",
@@ -199,9 +181,7 @@ class TestReferentialIntegrity:
 
 
 class TestFreshness:
-    def test_recent_data_passes(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_recent_data_passes(self, conn: duckdb.DuckDBPyConnection) -> None:
         config = CheckConfig(
             check_name="freshness",
             table="customers",
@@ -211,9 +191,7 @@ class TestFreshness:
         result = check_freshness(conn, config)
         assert result.status == CheckStatus.PASS
 
-    def test_stale_data_fails(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_stale_data_fails(self, conn: duckdb.DuckDBPyConnection) -> None:
         config = CheckConfig(
             check_name="freshness",
             table="customers",
@@ -225,9 +203,7 @@ class TestFreshness:
 
 
 class TestComposite:
-    def test_custom_sql_passes(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_custom_sql_passes(self, conn: duckdb.DuckDBPyConnection) -> None:
         config = CheckConfig(
             check_name="composite",
             table="orders",
@@ -239,9 +215,7 @@ class TestComposite:
         result = check_composite(conn, config)
         assert result.status == CheckStatus.PASS
 
-    def test_custom_sql_fails(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_custom_sql_fails(self, conn: duckdb.DuckDBPyConnection) -> None:
         config = CheckConfig(
             check_name="composite",
             table="orders",

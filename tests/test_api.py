@@ -9,9 +9,7 @@ from duckdb_data_quality.models import CheckStatus
 
 
 class TestCheckAPI:
-    def test_runs_multiple_checks(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_runs_multiple_checks(self, conn: duckdb.DuckDBPyConnection) -> None:
         results = check(
             conn,
             "orders",
@@ -24,16 +22,12 @@ class TestCheckAPI:
         assert results[0].check_name == "nulls"
         assert results[1].check_name == "uniqueness"
 
-    def test_unknown_check_returns_error(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_unknown_check_returns_error(self, conn: duckdb.DuckDBPyConnection) -> None:
         results = check(conn, "orders", [{"check": "nonexistent"}])
         assert len(results) == 1
         assert results[0].status == CheckStatus.ERROR
 
-    def test_handles_exception_in_check(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_handles_exception_in_check(self, conn: duckdb.DuckDBPyConnection) -> None:
         results = check(
             conn,
             "nonexistent_table",
@@ -43,9 +37,7 @@ class TestCheckAPI:
 
 
 class TestValidateSchema:
-    def test_matching_schema_passes(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_matching_schema_passes(self, conn: duckdb.DuckDBPyConnection) -> None:
         result = validate_schema(
             conn,
             "orders",
@@ -57,9 +49,7 @@ class TestValidateSchema:
         )
         assert result.status == CheckStatus.PASS
 
-    def test_missing_column_fails(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_missing_column_fails(self, conn: duckdb.DuckDBPyConnection) -> None:
         result = validate_schema(
             conn,
             "orders",
@@ -68,9 +58,7 @@ class TestValidateSchema:
         assert result.status == CheckStatus.FAIL
         assert "missing column" in result.message
 
-    def test_wrong_type_fails(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_wrong_type_fails(self, conn: duckdb.DuckDBPyConnection) -> None:
         result = validate_schema(
             conn,
             "orders",
@@ -78,9 +66,7 @@ class TestValidateSchema:
         )
         assert result.status == CheckStatus.FAIL
 
-    def test_nonexistent_table_errors(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_nonexistent_table_errors(self, conn: duckdb.DuckDBPyConnection) -> None:
         result = validate_schema(
             conn, "no_such_table", [{"column": "x", "dtype": "INTEGER"}]
         )
@@ -88,9 +74,7 @@ class TestValidateSchema:
 
 
 class TestReport:
-    def test_generates_html(
-        self, conn: duckdb.DuckDBPyConnection
-    ) -> None:
+    def test_generates_html(self, conn: duckdb.DuckDBPyConnection) -> None:
         results = check(
             conn,
             "orders",
