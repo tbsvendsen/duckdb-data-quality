@@ -4,6 +4,12 @@
 
 A lightweight data quality library for DuckDB. Runs checks against real database connections, returns typed Pydantic results, and generates HTML reports.
 
+![Module Architecture](docs/module-architecture.svg)
+
+## Validation Flow
+
+![Validation Flow](docs/validation-flow.svg)
+
 ## Modules
 
 ```
@@ -33,7 +39,7 @@ Eight independent check functions, each `(conn, config) -> CheckResult`:
 | `check_duplicates` | Duplicate rows across specified columns |
 | `check_uniqueness` | Percentage of distinct values in a column |
 | `check_range` | Numeric values within min/max bounds |
-| `check_regex` | String values match a DuckDB SIMILAR TO regex pattern |
+| `check_regex` | String values match a pattern (parameterized `$1` query) |
 | `check_referential_integrity` | Foreign key references exist in target table |
 | `check_freshness` | Most recent timestamp within max hours |
 | `check_composite` | Custom SQL returns an expected value |

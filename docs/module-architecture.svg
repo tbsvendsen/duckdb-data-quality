@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 300" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <style>
+    .title { font-size: 16px; font-weight: 600; fill: #1a1a2e; }
+    .subtitle { font-size: 11px; fill: #666; }
+    .mod { rx: 6; ry: 6; stroke-width: 1.5; }
+    .mod-label { font-size: 13px; font-weight: 600; fill: #fff; }
+    .mod-file { font-size: 10px; fill: #fff; opacity: 0.85; font-family: 'SF Mono', 'Menlo', monospace; }
+    .mod-desc { font-size: 10px; fill: #fff; opacity: 0.9; }
+    .flow { stroke: #666; stroke-width: 1.5; fill: none; marker-end: url(#arr); }
+    .label { font-size: 9px; fill: #888; font-style: italic; }
+  </style>
+
+  <text x="350" y="28" text-anchor="middle" class="title">Module Architecture</text>
+  <text x="350" y="46" text-anchor="middle" class="subtitle">Three public functions — check(), validate_schema(), report()</text>
+
+  <!-- api.py (public surface) -->
+  <rect x="230" y="70" width="240" height="90" class="mod" fill="#4C78A8" stroke="#3b6190"/>
+  <text x="350" y="95" text-anchor="middle" class="mod-label">api.py — Public API</text>
+  <text x="350" y="115" text-anchor="middle" class="mod-desc">check(conn, table, checks) → CheckResult[]</text>
+  <text x="350" y="130" text-anchor="middle" class="mod-desc">validate_schema(conn, table, expected)</text>
+  <text x="350" y="145" text-anchor="middle" class="mod-desc">report(results) → HTML string</text>
+
+  <!-- checks.py -->
+  <rect x="30" y="195" width="240" height="90" class="mod" fill="#54A24B" stroke="#438a3c"/>
+  <text x="150" y="220" text-anchor="middle" class="mod-label">checks.py — Implementations</text>
+  <text x="150" y="240" text-anchor="middle" class="mod-desc">8 check functions (DuckDB SQL)</text>
+  <text x="150" y="255" text-anchor="middle" class="mod-desc">CHECKS registry dict</text>
+  <text x="150" y="270" text-anchor="middle" class="mod-desc">Parameterized queries ($1)</text>
+
+  <!-- models.py -->
+  <rect x="430" y="195" width="240" height="90" class="mod" fill="#7B4F8A" stroke="#65407a"/>
+  <text x="550" y="220" text-anchor="middle" class="mod-label">models.py — Data Contracts</text>
+  <text x="550" y="240" text-anchor="middle" class="mod-desc">CheckResult, CheckConfig (Pydantic v2)</text>
+  <text x="550" y="255" text-anchor="middle" class="mod-desc">CheckStatus (StrEnum: pass/fail/error)</text>
+  <text x="550" y="270" text-anchor="middle" class="mod-desc">SchemaExpectation</text>
+
+  <!-- Flow arrows -->
+  <path d="M 300 160 L 200 193" class="flow"/>
+  <text x="240" y="172" class="label">dispatch</text>
+
+  <path d="M 400 160 L 500 193" class="flow"/>
+  <text x="460" y="172" class="label">types</text>
+
+  <line x1="270" y1="240" x2="428" y2="240" class="flow"/>
+  <text x="349" y="235" class="label">returns CheckResult</text>
+</svg>

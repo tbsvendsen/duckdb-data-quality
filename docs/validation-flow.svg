@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 380" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <style>
+    .title { font-size: 16px; font-weight: 600; fill: #1a1a2e; }
+    .subtitle { font-size: 11px; fill: #666; }
+    .box { rx: 6; ry: 6; stroke-width: 1.5; }
+    .box-label { font-size: 12px; font-weight: 600; fill: #fff; }
+    .box-detail { font-size: 10px; fill: #fff; opacity: 0.9; }
+    .flow { stroke: #666; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+    .label { font-size: 9px; fill: #888; font-style: italic; }
+    .check-box { rx: 4; ry: 4; stroke-width: 1; }
+    .check-label { font-size: 10px; font-weight: 600; }
+    .check-desc { font-size: 9px; fill: #555; }
+    .status-pass { fill: #54A24B; }
+    .status-fail { fill: #E15759; }
+    .status-error { fill: #F58518; }
+  </style>
+
+  <text x="400" y="28" text-anchor="middle" class="title">Validation Flow</text>
+  <text x="400" y="46" text-anchor="middle" class="subtitle">check(conn, table, checks) → CheckResult[] → report(results)</text>
+
+  <!-- Input -->
+  <rect x="20" y="70" width="160" height="90" class="box" fill="#4C78A8" stroke="#3b6190"/>
+  <text x="100" y="95" text-anchor="middle" class="box-label">Input</text>
+  <text x="100" y="115" text-anchor="middle" class="box-detail">DuckDB connection</text>
+  <text x="100" y="130" text-anchor="middle" class="box-detail">Table name</text>
+  <text x="100" y="145" text-anchor="middle" class="box-detail">Check specs (dict[])</text>
+
+  <!-- Dispatch -->
+  <rect x="220" y="70" width="160" height="90" class="box" fill="#7B4F8A" stroke="#65407a"/>
+  <text x="300" y="95" text-anchor="middle" class="box-label">Dispatch</text>
+  <text x="300" y="115" text-anchor="middle" class="box-detail">api.py → check()</text>
+  <text x="300" y="130" text-anchor="middle" class="box-detail">CHECKS registry</text>
+  <text x="300" y="145" text-anchor="middle" class="box-detail">Exception → ERROR</text>
+
+  <!-- Execute -->
+  <rect x="420" y="70" width="160" height="90" class="box" fill="#54A24B" stroke="#438a3c"/>
+  <text x="500" y="95" text-anchor="middle" class="box-label">Execute</text>
+  <text x="500" y="115" text-anchor="middle" class="box-detail">checks.py</text>
+  <text x="500" y="130" text-anchor="middle" class="box-detail">DuckDB SQL query</text>
+  <text x="500" y="145" text-anchor="middle" class="box-detail">Compare vs threshold</text>
+
+  <!-- Result -->
+  <rect x="620" y="70" width="160" height="90" class="box" fill="#E15759" stroke="#c94547"/>
+  <text x="700" y="95" text-anchor="middle" class="box-label">Result</text>
+  <text x="700" y="115" text-anchor="middle" class="box-detail">CheckResult (Pydantic)</text>
+  <text x="700" y="130" text-anchor="middle" class="box-detail">Status: pass/fail/error</text>
+  <text x="700" y="145" text-anchor="middle" class="box-detail">→ HTML report</text>
+
+  <!-- Flow arrows -->
+  <line x1="180" y1="115" x2="218" y2="115" class="flow"/>
+  <text x="199" y="108" class="label">specs</text>
+  <line x1="380" y1="115" x2="418" y2="115" class="flow"/>
+  <text x="399" y="108" class="label">fn(conn, cfg)</text>
+  <line x1="580" y1="115" x2="618" y2="115" class="flow"/>
+  <text x="599" y="108" class="label">result</text>
+
+  <!-- Check types grid -->
+  <rect x="20" y="190" width="760" height="175" rx="8" ry="8" fill="#fafafa" stroke="#ddd" stroke-width="1"/>
+  <text x="400" y="215" text-anchor="middle" font-size="13" font-weight="600" fill="#333">8 Check Types</text>
+
+  <!-- Row 1 -->
+  <rect x="35" y="230" width="170" height="50" class="check-box" fill="#fff" stroke="#4C78A8"/>
+  <text x="120" y="248" text-anchor="middle" class="check-label" fill="#4C78A8">nulls</text>
+  <text x="120" y="270" text-anchor="middle" class="check-desc">Null % vs threshold</text>
+
+  <rect x="220" y="230" width="170" height="50" class="check-box" fill="#fff" stroke="#4C78A8"/>
+  <text x="305" y="248" text-anchor="middle" class="check-label" fill="#4C78A8">duplicates</text>
+  <text x="305" y="270" text-anchor="middle" class="check-desc">Duplicate rows</text>
+
+  <rect x="405" y="230" width="170" height="50" class="check-box" fill="#fff" stroke="#4C78A8"/>
+  <text x="490" y="248" text-anchor="middle" class="check-label" fill="#4C78A8">uniqueness</text>
+  <text x="490" y="270" text-anchor="middle" class="check-desc">Distinct value %</text>
+
+  <rect x="590" y="230" width="170" height="50" class="check-box" fill="#fff" stroke="#4C78A8"/>
+  <text x="675" y="248" text-anchor="middle" class="check-label" fill="#4C78A8">range</text>
+  <text x="675" y="270" text-anchor="middle" class="check-desc">Min/max bounds</text>
+
+  <!-- Row 2 -->
+  <rect x="35" y="295" width="170" height="50" class="check-box" fill="#fff" stroke="#54A24B"/>
+  <text x="120" y="313" text-anchor="middle" class="check-label" fill="#54A24B">regex</text>
+  <text x="120" y="335" text-anchor="middle" class="check-desc">Pattern match ($1 param)</text>
+
+  <rect x="220" y="295" width="170" height="50" class="check-box" fill="#fff" stroke="#54A24B"/>
+  <text x="305" y="313" text-anchor="middle" class="check-label" fill="#54A24B">referential_integrity</text>
+  <text x="305" y="335" text-anchor="middle" class="check-desc">FK exists in ref table</text>
+
+  <rect x="405" y="295" width="170" height="50" class="check-box" fill="#fff" stroke="#54A24B"/>
+  <text x="490" y="313" text-anchor="middle" class="check-label" fill="#54A24B">freshness</text>
+  <text x="490" y="335" text-anchor="middle" class="check-desc">Max hours since update</text>
+
+  <rect x="590" y="295" width="170" height="50" class="check-box" fill="#fff" stroke="#E15759"/>
+  <text x="675" y="313" text-anchor="middle" class="check-label" fill="#E15759">composite</text>
+  <text x="675" y="335" text-anchor="middle" class="check-desc">Custom SQL (escape hatch)</text>
+</svg>
