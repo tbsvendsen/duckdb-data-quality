@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html
 from typing import Any
 
 import duckdb
@@ -24,8 +25,8 @@ def check(
 
     for check_spec in checks:
         check_name = check_spec["check"]
-        check_fn_obj = CHECKS.get(check_name)
-        if check_fn_obj is None:
+        check_fn = CHECKS.get(check_name)
+        if check_fn is None:
             results.append(
                 CheckResult(
                     check_name=check_name,
@@ -35,8 +36,6 @@ def check(
                 )
             )
             continue
-
-        check_fn = check_fn_obj
 
         config = CheckConfig(
             check_name=check_name,
@@ -121,11 +120,15 @@ def report(results: list[CheckResult]) -> str:
 
     for r in results:
         css = r.status.value
+        name = html.escape(r.check_name)
+        table = html.escape(r.table)
+        column = html.escape(r.column) if r.column else "-"
+        message = html.escape(r.message)
         lines.append(
-            f"<tr><td>{r.check_name}</td><td>{r.table}</td>"
-            f"<td>{r.column or '-'}</td>"
+            f"<tr><td>{name}</td><td>{table}</td>"
+            f"<td>{column}</td>"
             f'<td class="{css}">{r.status.value.upper()}</td>'
-            f"<td>{r.message}</td></tr>"
+            f"<td>{message}</td></tr>"
         )
 
     total = len(results)

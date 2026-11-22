@@ -44,6 +44,14 @@ class TestNulls:
         result = check_nulls(conn, config)
         assert result.status == CheckStatus.FAIL
 
+    def test_empty_table_returns_error(self, conn: duckdb.DuckDBPyConnection) -> None:
+        conn.execute("CREATE TABLE empty_t (val INTEGER)")
+        config = CheckConfig(
+            check_name="nulls", table="empty_t", column="val", params={"threshold": 0}
+        )
+        result = check_nulls(conn, config)
+        assert result.status == CheckStatus.ERROR
+
     def test_passes_for_non_null_column(self, conn: duckdb.DuckDBPyConnection) -> None:
         config = CheckConfig(
             check_name="nulls",

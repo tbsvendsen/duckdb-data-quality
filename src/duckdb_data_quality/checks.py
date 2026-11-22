@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections.abc import Callable
 
 import duckdb
@@ -10,13 +11,25 @@ from duckdb_data_quality.models import CheckConfig, CheckResult, CheckStatus
 
 ParamValue = float | int | str | bool | list[str]
 
+_IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+
+def _validate_identifier(name: str, label: str) -> None:
+    if not _IDENTIFIER_RE.match(name):
+        raise ValueError(f"Invalid SQL identifier for {label}: {name!r}")
+
 
 def _float_param(params: dict[str, ParamValue], key: str, default: float) -> float:
     val = params.get(key, default)
     if isinstance(val, (int, float)):
         return float(val)
     if isinstance(val, str):
-        return float(val)
+        try:
+            return float(val)
+        except ValueError:
+            raise ValueError(
+                f"Parameter {key!r} must be numeric, got {val!r}"
+            ) from None
     return default
 
 
@@ -222,6 +235,9 @@ def check_referential_integrity(
     ref_table = str(config.params.get("ref_table", ""))
     ref_column = str(config.params.get("ref_column", column or ""))
 
+    _validate_identifier(ref_table, "ref_table")
+    _validate_identifier(ref_column, "ref_column")
+
     result = conn.execute(
         f"""
         SELECT COUNT(*) FROM "{table}"
@@ -292,13 +308,22 @@ def check_composite(
     conn: duckdb.DuckDBPyConnection, config: CheckConfig
 ) -> CheckResult:
     table = config.table
-    sql = str(config.params.get("sql", ""))
+    sql = str(config.params.get("sql", "")).strip()
     raw_expected = config.params.get("expected", 0)
     expected: float | int | str = (
         raw_expected if not isinstance(raw_expected, (bool, list)) else 0
     )
 
-    result = conn.execute(sql).fetchone()
+    if not sql.upper().startswith("SELECT"):
+        return CheckResult(
+            check_name="composite",
+            table=table,
+            status=CheckStatus.ERROR,
+            message="Only SELECT statements are allowed",
+        )
+
+    # Wrap in a subquery to enforce read-only execution
+    result = conn.execute(f"SELECT * FROM ({sql}) AS _q").fetchone()
     if result is None:
         return CheckResult(
             check_name="composite",
